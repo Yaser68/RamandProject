@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using RamandProject.Common;
 using RamandProject.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -43,6 +44,16 @@ namespace RamandProject.Services
                                               new { UserName=user.UserName, Password=user.Password },
                                               commandType: CommandType.StoredProcedure);
 
+            }
+        }
+
+        public bool GetByAsync(string userName,string password)
+        {
+            using (IDbConnection connection = _dapperConnection.GetSqlConnection())
+            {
+                var query = "select count(1) from [User] where UserName=@UserName and Password=@Password";
+                //return await  connection.QuerySingleOrDefaultAsync<User>(query, new { UserName = userName, Password=password });
+                return  connection.ExecuteScalar<bool>(query, new { UserName = userName, Password = password });
             }
         }
     }

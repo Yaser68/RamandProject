@@ -32,19 +32,41 @@ namespace RamandProject.Controllers
         {
             if (password == Re_password)
             {
-                var passwordHash = PasswordHasher.ComputeHash(password);
+              
+                    var passwordHash = PasswordHasher.ComputeHash(password);
 
-                var user = new User
-                {
-                    UserName = username,
-                    Password = passwordHash,
-                   
-                };
-                
-                await _userService.RegisterAsync(user);
-                return Content("User Added to DataBase ");
-            }
+                    var user = new User
+                    {
+                        UserName = username,
+                        Password = passwordHash,
+
+                    };
+
+                    await _userService.RegisterAsync(user);
+                    return Content("User Added to DataBase ");
+                }
+           
             else return Content("Re-password not match to password ");
+        }
+
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
+        {
+           
+         
+                var passwordHash = PasswordHasher.ComputeHash(password);
+                var cursor = _userService.GetByAsync(username,password);
+
+            if (cursor)
+            {
+                return Content("Ok");
+            }
+            else
+            {
+                return Content("Cancel");
+            }
+           
         }
     }
 }
