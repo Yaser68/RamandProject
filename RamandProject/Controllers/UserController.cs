@@ -19,11 +19,21 @@ namespace RamandProject.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("GetUsers")]
         public async Task<List<User>> GetUsers()
         {
             var result= await _userService.GetUsersAsync();
             return result;
+        }
+
+        [HttpPost("Register")]
+        public IActionResult Register([FromForm] string username, [FromForm] string password, [FromForm] string Re_password)
+        {
+            if (password == Re_password)
+            {
+               return View();
+            }
+            else return Content("Re-password not match to password ");
         }
     }
 }

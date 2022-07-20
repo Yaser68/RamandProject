@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using RamandProject.Common;
 using RamandProject.Model;
 using System.Collections.Generic;
 using System.Data;
@@ -12,24 +13,22 @@ namespace RamandProject.Services
     public class UserService : IUserService
     {
 
-        private readonly IConfiguration _configuration;
+        private readonly DapperConnection _dapperConnection;
 
-        public UserService(IConfiguration configuration)
+        public UserService(DapperConnection dapperConnection)
         {
-            _configuration = configuration;
+            _dapperConnection = dapperConnection;
         }
+
+
+
 
         public async Task<List<User>> GetUsersAsync()
         {
-            var connectionString = _configuration.GetConnectionString("RamandDb");
-
-            var query = @"select [UserName] 
-                         from [User]";
-
-
-
-            using (IDbConnection connection=new SqlConnection(connectionString))
+           
+            using (IDbConnection connection=_dapperConnection.GetSqlConnection())
             {
+                var query = @"select [UserName],[Id] from [User]";
                 var result = await connection.QueryAsync<User>(query);
                 return result.ToList();
             }

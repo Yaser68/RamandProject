@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using RamandProject.Common;
 using RamandProject.Configs.Extensions;
 using RamandProject.Services;
 using System;
@@ -33,6 +34,7 @@ namespace RamandProject
             services.AddMySwagger();
 
             services.AddTransient<IUserService, UserService>();
+            services.AddSingleton(typeof(DapperConnection));
 
         }
 
