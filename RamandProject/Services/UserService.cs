@@ -28,7 +28,7 @@ namespace RamandProject.Services
            
             using (IDbConnection connection=_dapperConnection.GetSqlConnection())
             {
-                var query = @"select [UserName],[Id] from [User]";
+                var query = "SP_User_GetUser";
                 var result = await connection.QueryAsync<User>(query);
                 return result.ToList();
             }
@@ -38,8 +38,10 @@ namespace RamandProject.Services
         {
             using (IDbConnection connection = _dapperConnection.GetSqlConnection())
             {
-                var query = @"Insert into [User](UserName,Password) values (@UserName,@Password)";
-                await connection.ExecuteAsync(query, user);
+                var query = "SP_User_Insert";
+                await connection.ExecuteAsync(query,
+                                              new { UserName=user.UserName, Password=user.Password },
+                                              commandType: CommandType.StoredProcedure);
 
             }
         }
