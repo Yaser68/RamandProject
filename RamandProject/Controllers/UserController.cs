@@ -1,8 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using RamandProject.Common;
 using RamandProject.Model;
 using RamandProject.Services;
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace RamandProject.Controllers
@@ -10,16 +17,21 @@ namespace RamandProject.Controllers
 
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
 
         private readonly IUserService _userService;
+        private readonly IConfiguration _configuration;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IConfiguration configuration)
         {
             _userService = userService;
+            _configuration = configuration;
         }
 
+
+        [AllowAnonymous]
         [HttpGet("GetUsers")]
         public async Task<List<User>> GetUsers()
         {
@@ -27,6 +39,7 @@ namespace RamandProject.Controllers
             return result;
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] string username, [FromForm] string password, [FromForm] string Re_password)
         {
@@ -51,7 +64,8 @@ namespace RamandProject.Controllers
 
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
+        
+        public async Task<AuthResult> Login([FromForm] string username, [FromForm] string password)
         {
            
          
@@ -60,11 +74,28 @@ namespace RamandProject.Controllers
 
             if (cursor)
             {
-                return Content("Ok");
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var signingKey = _configuration["JwtSigningKey"];
+                var jwtkey = Encoding.ASCII.GetBytes(signingKey);
+
+                var expires = DateTime.UtcNow.AddDays(1);
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[] { new Claim(JwtRegisteredClaimNames.UniqueName, username) }),
+                    Claims = new Dictionary<string, object> { [JwtRegisteredClaimNames.UniqueName] = username },
+                    Expires = expires,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtkey), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var jwttoken = tokenHandler.CreateToken(tokenDescriptor);
+
+
+                return  new AuthResult { Successful = true, Token = tokenHandler.WriteToken(jwttoken), };
             }
             else
             {
-                return Content("Cancel");
+                return  new AuthResult { Successful = false };
             }
            
         }
