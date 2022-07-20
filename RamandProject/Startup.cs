@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RamandProject.Configs.Extensions;
+using RamandProject.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace RamandProject
 
             services.AddControllers();
             services.AddMySwagger();
+
+            services.AddTransient<IUserService, UserService>();
 
         }
 

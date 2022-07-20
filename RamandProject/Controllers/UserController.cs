@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RamandProject.Model;
+using RamandProject.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RamandProject.Controllers
 {
@@ -8,11 +12,18 @@ namespace RamandProject.Controllers
     public class UserController : Controller
     {
 
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<List<User>> GetUsers()
         {
-            return View();
+            var result= await _userService.GetUsersAsync();
+            return result;
         }
     }
 }
