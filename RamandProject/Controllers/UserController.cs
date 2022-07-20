@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RamandProject.Common;
 using RamandProject.Model;
 using RamandProject.Services;
 using System.Collections.Generic;
@@ -27,11 +28,21 @@ namespace RamandProject.Controllers
         }
 
         [HttpPost("Register")]
-        public IActionResult Register([FromForm] string username, [FromForm] string password, [FromForm] string Re_password)
+        public async Task<IActionResult> Register([FromForm] string username, [FromForm] string password, [FromForm] string Re_password)
         {
             if (password == Re_password)
             {
-               return View();
+                var passwordHash = PasswordHasher.ComputeHash(password);
+
+                var user = new User
+                {
+                    UserName = username,
+                    Password = passwordHash,
+                   
+                };
+                
+                await _userService.RegisterAsync(user);
+                return Content("User Added to DataBase ");
             }
             else return Content("Re-password not match to password ");
         }

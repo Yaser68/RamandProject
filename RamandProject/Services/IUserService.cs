@@ -7,6 +7,7 @@ namespace RamandProject.Services
     public interface IUserService
     {
         Task<List<User>> GetUsersAsync();
+        Task RegisterAsync(User user);
 
     }
 }

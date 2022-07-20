@@ -33,5 +33,15 @@ namespace RamandProject.Services
                 return result.ToList();
             }
         }
+
+        public async Task RegisterAsync(User user)
+        {
+            using (IDbConnection connection = _dapperConnection.GetSqlConnection())
+            {
+                var query = @"Insert into [User](UserName,Password) values (@UserName,@Password)";
+                await connection.ExecuteAsync(query, user);
+
+            }
+        }
     }
 }

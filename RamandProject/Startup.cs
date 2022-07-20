@@ -35,6 +35,7 @@ namespace RamandProject
 
             services.AddTransient<IUserService, UserService>();
             services.AddSingleton(typeof(DapperConnection));
+            
 
         }
 
