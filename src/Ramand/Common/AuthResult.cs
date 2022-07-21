@@ -1,4 +1,4 @@
-﻿namespace Ramand;
+﻿namespace Ramand.Common;
 
 public class AuthResult
 {

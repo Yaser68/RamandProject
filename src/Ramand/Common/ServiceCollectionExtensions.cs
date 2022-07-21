@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 
-namespace Ramand;
+namespace Ramand.Common;
 
 public static class ServiceCollectionExtensions
 {
