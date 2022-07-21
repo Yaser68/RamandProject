@@ -63,7 +63,7 @@ namespace RamandProject.Controllers
                 else return Content("User Is Already Exist ");
             }
            
-            else return Content("Re-password not match to password ");
+            else return Content("Passwords Do Not Match");
         }
 
 
@@ -74,7 +74,7 @@ namespace RamandProject.Controllers
            
          
                 var passwordHash = PasswordHasher.ComputeHash(password);
-                var cursor = _userService.GetByAsync(username,password);
+                var cursor = _userService.GetByAsync(username,passwordHash);
 
             if (cursor)
             {
