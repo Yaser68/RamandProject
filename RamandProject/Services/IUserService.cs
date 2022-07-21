@@ -8,6 +8,7 @@ namespace RamandProject.Services
     {
         Task<List<User>> GetUsersAsync();
         bool GetByAsync(string userName,string password);
+        bool Exist(string userName);
         Task RegisterAsync(User user);
         
     }

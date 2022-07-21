@@ -51,9 +51,19 @@ namespace RamandProject.Services
         {
             using (IDbConnection connection = _dapperConnection.GetSqlConnection())
             {
-                var query = "select count(1) from [User] where UserName=@UserName and Password=@Password";
-                //return await  connection.QuerySingleOrDefaultAsync<User>(query, new { UserName = userName, Password=password });
-                return  connection.ExecuteScalar<bool>(query, new { UserName = userName, Password = password });
+                var query = "SP_User_Login";
+                return  connection.ExecuteScalar<bool>(query, new { UserName = userName, Password = password },
+                                                                    commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public bool Exist(string userName)
+        {
+            using (IDbConnection connection = _dapperConnection.GetSqlConnection())
+            {
+                var query = "SP_User_Exist ";
+                return connection.ExecuteScalar<bool>(query, new { UserName = userName },
+                                                           commandType: CommandType.StoredProcedure);
             }
         }
     }

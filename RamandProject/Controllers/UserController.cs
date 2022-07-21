@@ -17,7 +17,7 @@ namespace RamandProject.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    
     public class UserController : Controller
     {
 
@@ -31,21 +31,23 @@ namespace RamandProject.Controllers
         }
 
 
-        [AllowAnonymous]
+        
         [HttpGet("GetUsers")]
+        [Authorize]
         public async Task<List<User>> GetUsers()
         {
             var result= await _userService.GetUsersAsync();
             return result;
         }
 
-        [AllowAnonymous]
+       
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] string username, [FromForm] string password, [FromForm] string Re_password)
         {
             if (password == Re_password)
             {
-              
+                if (!_userService.Exist(username))
+                {
                     var passwordHash = PasswordHasher.ComputeHash(password);
 
                     var user = new User
@@ -58,6 +60,8 @@ namespace RamandProject.Controllers
                     await _userService.RegisterAsync(user);
                     return Content("User Added to DataBase ");
                 }
+                else return Content("User Is Already Exist ");
+            }
            
             else return Content("Re-password not match to password ");
         }
@@ -78,7 +82,7 @@ namespace RamandProject.Controllers
                 var signingKey = _configuration["JwtSigningKey"];
                 var jwtkey = Encoding.ASCII.GetBytes(signingKey);
 
-                var expires = DateTime.UtcNow.AddDays(1);
+                var expires = DateTime.UtcNow.AddDays(2);
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
