@@ -1,32 +1,24 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Data.SqlClient;
 
 namespace Ramand.Data;
 
 /// <summary>
-/// 
+/// Class for dapper connection creation
 /// </summary>
-public sealed class DapperConnection
+public class DapperConnection
 {
-    private readonly IOptions<DapperConnectionOptions> _options;
 
-    public DapperConnection(IOptions<DapperConnectionOptions> options)
+    private readonly IConfiguration _configuration;
+
+    public DapperConnection(IConfiguration configuration)
     {
-        _options = options;
+        _configuration = configuration;
     }
 
-    /// <summary>
-    /// Creates an instance of SqlConnection. Disposal of the object must be done by the caller.
-    /// </summary>
-    /// <returns></returns>
     public SqlConnection GetSqlConnection()
     {
-        return new SqlConnection(_options.Value.ConnectionString);
+        return new SqlConnection(_configuration.GetConnectionString("RamandDb"));
     }
-}
-
-
-public sealed class DapperConnectionOptions
-{
-    public string ConnectionString = default!;
 }

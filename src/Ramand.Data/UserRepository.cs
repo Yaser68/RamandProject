@@ -4,6 +4,11 @@ using System.Data;
 
 namespace Ramand.Data;
 
+
+/// <summary>
+/// Implementation class for Repository pattern of user
+/// </summary>
+
 public class UserRepository : IUserRepository
 {
     private readonly DapperConnection _dapperConnection;
@@ -35,30 +40,26 @@ public class UserRepository : IUserRepository
                                       commandType: CommandType.StoredProcedure);
     }
 
-    public Task<bool> GetByAsync(string userName, string password)
+    public  async Task<bool> GetByAsync(string userName, string password)
     {
         using var connection = _dapperConnection.GetSqlConnection();
 
-        const string query = "SP_User_Login";
-        return connection.ExecuteScalarAsync<bool>(query, new { UserName = userName, Password = password }, commandType: CommandType.StoredProcedure);
+        var query = "SP_User_Login";
+        return await connection.ExecuteScalarAsync<bool>(query, new { UserName = userName, Password = password }, commandType: CommandType.StoredProcedure);
     }
 
     public async Task<bool> ExistsAsync(string userName)
     {
         using var connection = _dapperConnection.GetSqlConnection();
-        try
-        {
+       
             var query = "SP_User_Exist ";
-            var found = await connection.ExecuteScalarAsync<bool>(query, new { UserName = userName },
+            return await connection.ExecuteScalarAsync<bool>(query, new { UserName = userName },
                                                        commandType: CommandType.StoredProcedure);
 
-            return found;
-        }
-        catch(Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+         
+        
+       
 
-        return  false;
+       
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Ramand.Common;
-using Ramand.Models;
+using Ramand;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -56,12 +56,12 @@ public class UserController : Controller
                 };
 
                 await _userService.RegisterAsync(user);
-                return Ok("User created."); // Should be Created (201).
+                return Ok("User created."); 
             }
             else return BadRequest("User Is Already Exist.");
         }
 
-        // TODO: Fix.
+       
         else return BadRequest("Passwords Do Not Match");
     }
 

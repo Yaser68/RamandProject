@@ -21,15 +21,8 @@ var env = builder.Environment;
 
 builder.Services.AddControllers();
 builder.Services.AddRamandSwagger();
-
-builder.Services.Configure<DapperConnectionOptions>((options) =>
-{
-    options.ConnectionString = configuration.GetConnectionString("RamandDb");
-});
-
-builder.Services.AddSingleton<DapperConnection>();
-
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddSingleton(typeof(DapperConnection));
 
 var signingKey = configuration["JwtSigningKey"];
 var key = Encoding.ASCII.GetBytes(signingKey);
